@@ -1,0 +1,42 @@
+# .gitignore for Fullstack Django + Expo Project
+
+# --- Python / Django ---
+__pycache__/
+*.py[cod]
+*.sqlite3
+db.sqlite3
+*.log
+*.pot
+*.pyc
+
+# Virtualenv
+env/
+venv/
+ENV/
+
+# Django migrations
+**/migrations/
+
+# --- Node / React Native ---
+node_modules/
+.expo/
+dist/
+web-build/
+*.expo*
+*.log
+
+# Build output
+*.apk
+*.ipa
+
+# macOS / Windows junk
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Environment variables
+.env
+.env.*
