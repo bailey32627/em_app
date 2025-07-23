@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '@em_app/shared/src/api/config';
+import { API_BASE_URL } from '@em_app/shared';
 import { useNavigate } from 'react-router-dom';
 
 const RegisterPage: React.FC = () => {
@@ -100,11 +100,10 @@ const RegisterPage: React.FC = () => {
               color: usernameStatus === 'available' ? 'green' : 'red',
               marginTop: 4,
             }}
-            >
+          >
             {usernameMessage}
           </div>
         )}
-
         <input
           type="password"
           placeholder="Password"

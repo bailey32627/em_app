@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@em_app/shared/src/context/AuthContext';
+import { useAuth } from '@em_app/shared';
 
 export default function DashboardPage() {
   const { user, logout, loading } = useAuth();
