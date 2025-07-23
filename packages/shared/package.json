@@ -4,6 +4,7 @@
   "main": "src/index.ts",
   "types": "src/index.ts",
   "exports": {
+    "./src/api/config": "./src/api/config.ts",
     "./src/context/AuthContext": "./src/context/AuthContext.tsx",
     "./src/storage/tokenStorage": "./src/storage/tokenStorage.ts"
   },

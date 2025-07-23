@@ -6,6 +6,7 @@ import Home from '../pages/Home';
 import Login from '../pages/Login';
 import Dashboard from '../pages/Dashboard';
 import Header from '../components/Header';
+import RegisterPage from '../pages/RegisterPage';
 
 const Navigation: React.FC = () => {
   const { user, loading } = useAuth();
@@ -17,13 +18,11 @@ const Navigation: React.FC = () => {
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route  path="/register" element={<RegisterPage />}/>
+        <Route path="/login" element={<Login />} />
         <Route
           path="/dashboard"
           element={user ? <Dashboard /> : <Navigate to="/login" replace />}
-        />
-        <Route
-          path="/login"
-          element={!user ? <Login /> : <Navigate to="/dashboard" replace />}
         />
       </Routes>
     </Router>
