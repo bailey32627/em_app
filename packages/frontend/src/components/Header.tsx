@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '@em_app/shared/src/context/AuthContext';
+import { useAuth } from '@em_app/shared';
 import { Link } from 'react-router-dom'; // Adjust if using a different router
 
 const Header: React.FC = () => {

@@ -1,5 +1,5 @@
 import './App.css'
-import { AuthProvider } from '@em_app/shared/src/context/AuthContext';
+import { AuthProvider } from '@em_app/shared';
 import Navigation from './components/Navigation';
 
 const App = () => {

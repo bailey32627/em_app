@@ -30,6 +30,9 @@ ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'users.User'
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",  # your React dev server
+]
 
 # Application definition
 
