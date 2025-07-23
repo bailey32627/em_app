@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-<<<<<<< HEAD
 import { API_BASE_URL } from '@em_app/shared';
-=======
-import { API_BASE_URL } from '@em_app/shared/src/api/config';
->>>>>>> main
 import { useNavigate } from 'react-router-dom';
 
 const RegisterPage: React.FC = () => {
@@ -104,18 +100,10 @@ const RegisterPage: React.FC = () => {
               color: usernameStatus === 'available' ? 'green' : 'red',
               marginTop: 4,
             }}
-<<<<<<< HEAD
           >
             {usernameMessage}
           </div>
         )}
-=======
-            >
-            {usernameMessage}
-          </div>
-        )}
-
->>>>>>> main
         <input
           type="password"
           placeholder="Password"
