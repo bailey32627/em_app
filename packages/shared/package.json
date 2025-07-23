@@ -4,10 +4,16 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
+<<<<<<< HEAD
     ".": {
       "import": "./dist/index.js",
       "types": "./dist/index.d.ts"
     }
+=======
+    "./src/api/config": "./src/api/config.ts",
+    "./src/context/AuthContext": "./src/context/AuthContext.tsx",
+    "./src/storage/tokenStorage": "./src/storage/tokenStorage.ts"
+>>>>>>> main
   },
   "scripts": {
     "build": "tsc -p tsconfig.json"

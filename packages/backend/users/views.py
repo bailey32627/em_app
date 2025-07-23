@@ -15,6 +15,10 @@ class RegisterView( generics.CreateAPIView ):
     serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
 
+    def create( self, request, *args, **kwargs ):
+        print( "Incoming payload:", request.data )
+        return super().create( request, *args, **kwargs )
+
 class UserView( APIView ):
     permission_classes = [IsAuthenticated]
 
