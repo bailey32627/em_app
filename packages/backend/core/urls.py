@@ -21,6 +21,7 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/check-username/', views.check_username, name='check_username'),
+    path('api/check-email/', views.check_email, name='check_email' ),
     path( 'api/', include( 'users.urls') ),
 
 ]
