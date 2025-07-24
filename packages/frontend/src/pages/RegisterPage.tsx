@@ -5,25 +5,58 @@ import { useNavigate } from 'react-router-dom';
 
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
-  const [ firstname, setFirstname ] = useState( '' );
-  const [ lastname, setLastname ] = useState( '' );
+//  const [ firstname, setFirstname ] = useState( '' );
+//  const [ lastname, setLastname ] = useState( '' );
   const [ email, setEmail ] = useState( '' );
+  const [ emailStatus, setEmailStatus ] = useState< 'checking' | 'available' | 'taken' | null>(null);
+  const [ emailMessage, setEmailMessage ] = useState( '' );
 
   const [ username, setUsername ] = useState('');
-  const [usernameStatus, setUsernameStatus] = useState<'checking' | 'available' | 'taken' | null>(null);
-  const [usernameMessage, setUsernameMessage] = useState('');
+  const [ usernameStatus, setUsernameStatus ] = useState<'checking' | 'available' | 'taken' | null>(null);
+  const [ usernameMessage, setUsernameMessage ] = useState('');
 
   const [ password, setPassword ] = useState( '' );
+  const [ passwordError, setPasswordError ] = useState( '' );
 
   const [ organization, setOrganization ] = useState( '' );
 
   const [ loading, setLoading ] = useState( false );
   const [ error, setError ] = useState( '' );
 
-  const handleUsernameBlur = async () => {
-    if( !username ) return;
 
+  // validate the password
+  const validatePassword = ( value: string ) => {
+    let error = "";
+
+    if( value.length < 8 ) {
+      error += "Password must be at least 8 characters.\n";
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
+      error += "Password must contain at least one special character.\n";
+    }
+    if( !/[A-Z]/.test(value)) {
+      error += "Password must contain at least one capital letter.\n";
+    }
+    if( !/\d/.test(value) ) {
+      error += "Password must contain at least one number.\n";
+    }
+
+    return error;
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement> ) => {
+    const val = e.target.value;
+    setPassword( val );
+    setPasswordError( validatePassword( val ) );
+  };
+
+
+  // ensure thatt the username is unique
+  const handleUsernameBlur = async () => {
     setUsernameStatus( 'checking' );
+    if( !username )
+      return;
+
     try {
       const res = await axios.get( `${API_BASE_URL}/api/check-username/`, {
         params: { username },
@@ -42,6 +75,30 @@ const RegisterPage: React.FC = () => {
     }
   };
 
+  // ensure that the email address is unique
+  const handleEmailBlur = async () => {
+    setEmailStatus( 'checking' );
+    if( !email) return;
+
+    try {
+      const res = await axios.get( `${API_BASE_URL}/api/check-email/`, {
+        params: { email },
+      });
+      if( res.data.available ) {
+        setEmailStatus( 'available' );
+        setEmailMessage( 'Email is available' );
+      } else {
+        setEmailStatus( 'taken' );
+        setEmailMessage( 'Eamil address is already in use' );
+      }
+    } catch ( err ) {
+        console.error( 'Error checking email', err );
+        setEmailStatus( null );
+        setEmailMessage( 'Error checking email address' );
+    }
+  }
+
+  // register the user
   const handleRegister = async ( e: React.FormEvent ) => {
     e.preventDefault();
     setLoading( true );
@@ -89,37 +146,75 @@ const RegisterPage: React.FC = () => {
           type="text"
           placeholder="Username"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          onChange={(e) => setUsername(e.target.value) }
           onBlur={handleUsernameBlur} // check when user leaves field
-          style={styles.input}
+          style={
+            { ...styles.input,
+              border: usernameStatus === 'taken' ? '2px solid red' :
+                      usernameStatus === 'available' ? '3px solid green':
+                      usernameStatus === 'checking' ? '1px solid #ccc' : '1px solid #ccc'
+            }
+          }
           required
         />
-        {usernameStatus && (
+        {usernameStatus === 'taken' &&(
           <div
             style={{
-              color: usernameStatus === 'available' ? 'green' : 'red',
+              color: 'red',
               marginTop: 4,
             }}
           >
             {usernameMessage}
           </div>
         )}
+
         <input
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          style={styles.input}
+          onChange={handlePasswordChange}
+          style={{
+            ...styles.input,
+            border: passwordError ?  "2px solid red" : password ? "3px solid green" : "1px solid #ccc"
+          }}
           required
         />
+        { passwordError && (
+          <p
+          style={{
+            color: 'red',
+            marginTop: 4,
+            whiteSpace: 'pre-wrap',
+          }}
+          > {passwordError}
+            </p>
+          )
+        }
+
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          style={styles.input}
+          onBlur={handleEmailBlur} // check when user leaves field
+          style={{
+            ...styles.input,
+            border: emailStatus === 'taken' ? '2px solid red' :
+                    emailStatus === 'available' ? '3px solid green':
+                    emailStatus === 'checking' ? '1px solid #ccc' : '1px solid #ccc'
+          }}
           required
         />
+        {emailStatus === 'taken' && (
+          <div
+            style={{
+              color : 'red',
+              marginTop: 4,
+            }}
+          >
+            {emailMessage}
+          </div>
+        )}
         <input
           type="text"
           placeholder="Organization (optional)"
@@ -173,6 +268,9 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: '#fff',
     border: 'none',
     cursor: 'pointer',
+  },
+  errorBorder: {
+    borderColor: 'red',
   },
   error: {
     color: 'red',
