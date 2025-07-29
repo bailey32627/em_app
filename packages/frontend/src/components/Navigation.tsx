@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '@em_app/shared';
 
-import Header from '../components/Header';
+import Navbar from '../components/Navbar';
 
-import Home from '../pages/Home'; // replace with HomePage
+import HomePage from '../pages/HomePage'; // replace with HomePage
 
 import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
@@ -17,9 +17,9 @@ const Navigation: React.FC = () => {
 
   return (
     <Router>
-      <Header />
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route
