@@ -18,7 +18,6 @@ export default function DashboardPage() {
   return (
     <div style={{ maxWidth: 600, margin: 'auto', padding: 20 }}>
       <h1>Welcome, {user?.username}!</h1>
-      <p>Organization: {user?.organization || 'None'}</p>
 
       <button onClick={logout} style={{ marginTop: 20, padding: '10px 20px' }}>
         Logout

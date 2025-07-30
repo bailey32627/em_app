@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 // ICONS
 import * as FaIcons from 'react-icons/fa';
@@ -27,7 +27,7 @@ type NavLinkProps = {
   children?: React.ReactNode;
 };
 
-const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
+export const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
   const {toggleNavbar} = useUI();
   const {isNavbarOpen} = useUI();
 
@@ -117,5 +117,3 @@ const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
     </IconContext.Provider>
   )
 };
-
-export default Navbar;

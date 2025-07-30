@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.contrib.auth import get_user_model
 from .models import UserInvitation, InvitationStatus
 from .serializers import UserInvitationSerializer
-from users.models import User
+#from users.models import User
 
 UserModel = get_user_model()
 

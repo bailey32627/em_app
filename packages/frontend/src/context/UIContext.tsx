@@ -10,7 +10,7 @@ type UIContextType = {
 const UIContext = createContext< UIContextType | undefined>( undefined );
 
 export const UIProvider = ({ children }: { children: ReactNode } ) => {
-  const [ isNavbarOpen, setIsNavbarOpen ] = useState( false );
+  const [ isNavbarOpen, setIsNavbarOpen ] = useState( true );
 
   const toggleNavbar = () => setIsNavbarOpen( prev => !prev );
   const openNavbar = () => setIsNavbarOpen( true );

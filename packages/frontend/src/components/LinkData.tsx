@@ -22,7 +22,20 @@ export const HomePageLinks: LinkItem[] = [
     icon: <FaIcons.FaChevronUp />,
 
   },
-]
+];
+
+export const RegisterPageLinks: LinkItem[] = [
+  {
+    title: "Login",
+    path: "/login",
+    icon: <FaIcons.FaChevronRight />,
+  },
+  {
+    title: "Home",
+    path: "/",
+    icon: <AiIcons.AiFillHome />,
+  },
+];
 
 export const NonUserLinks: LinkItem[] = [
   {

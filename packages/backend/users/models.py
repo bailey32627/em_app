@@ -1,7 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from facilities.models import Facility
-from organizations.models import Organization
 from django.conf import settings
 
 
@@ -14,9 +12,7 @@ class User(AbstractUser):
     is_division_admin = models.BooleanField(default=False)
     is_facility_admin = models.BooleanField(default=False)
 
-
     # extra fields
-
 
     def __str__(self):
         return self.username
@@ -28,7 +24,7 @@ class User(AbstractUser):
         if self.organization:
             return self.organization
         division = self.get_division()
-        return division.system if division else None
+        return division.organization if division else None
 
 #check these flags in views or permissions logic:
 #if request.user.is_system_admin:

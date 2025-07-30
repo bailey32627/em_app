@@ -6,7 +6,7 @@ from .models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email' ]
+        fields = ['id', 'username', 'email', 'first_name', 'last_name' ]
 
 
 
@@ -21,9 +21,13 @@ class RegisterSerializer( serializers.ModelSerializer ):
     )
     password = serializers.CharField( write_only=True )
 
+    #optional fields
+    first_name = serializers.CharField( required=False, allow_blank=True )
+    last_name = serializers.CharField( required=False, allow_blank=True )
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'email' ]
+        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name' ]
 
     def validate_password( self, value: str ):
         #minimum length
@@ -43,5 +47,7 @@ class RegisterSerializer( serializers.ModelSerializer ):
             username=validated_data['username'],
             password=validated_data['password'],
             email=validated_data['email'],
+            first_name=validated_data.get( 'first_name', ''),
+            last_name=validated_data.get( 'last_name', '' )
         )
         return user
