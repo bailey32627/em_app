@@ -8,9 +8,10 @@ interface IconButtonProps {
   path: string;   // where the link navigates to
   icon: ReactNode;   // any react element like <FaHome />
   label: string;     // label for the link
+  onClick?: ()=> void;  // optional onClick event
 }
 
-export const ThemedLink: React.FC< IconButtonProps > = ({ path, icon, label }) => {
+export const ThemedLink: React.FC< IconButtonProps > = ({ path, icon, label, onClick }) => {
   const { theme } = useTheme();
   const [ hovered, setHovered ] = useState( false );
 
@@ -43,6 +44,7 @@ export const ThemedLink: React.FC< IconButtonProps > = ({ path, icon, label }) =
       style= {styles.link }
       onMouseEnter= {() => setHovered( true ) }
       onMouseLeave={ () => setHovered( false ) }
+      onClick = {onClick}
     >
     <span style={styles.icon}>{icon}</span>{label}
     </Link>

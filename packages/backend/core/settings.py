@@ -47,6 +47,11 @@ INSTALLED_APPS = [
     'corsheaders',
     'users',
     'rest_framework_simplejwt.token_blacklist',
+    'organizations',
+    'facilities',
+    'divisions',
+    'invitations',
+    'billing',
 ]
 
 MIDDLEWARE = [
@@ -146,3 +151,8 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer", ),
 }
+
+# Stripe settings
+STRIPE_SECRET_KEY = 'sk_test_...'
+STRIPE_PUBLISHABLE_KEY = 'pk_test_...'
+STRIPE_WEBHOOK_SECRET = 'whsec_...'

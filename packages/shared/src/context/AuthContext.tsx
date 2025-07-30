@@ -6,8 +6,12 @@ import { tokenStorage } from '../storage/tokenStorage';
 interface User {
   id: number;
   username: string;
-  organization: string | null;
-  is_org_admin: boolean;
+  system: string;
+  division: string;
+  facility: string;
+  is_organization_admin: boolean;
+  is_division_admin: boolean;
+  is_facility_admin: boolean;
 }
 
 interface AuthContextType {
