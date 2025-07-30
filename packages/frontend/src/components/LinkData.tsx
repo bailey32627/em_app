@@ -10,12 +10,7 @@ export interface LinkItem {
   icon: ReactElement;
 }
 
-export const NonUserLinks: LinkItem[] = [
-  {
-    title: "Home",
-    path: "/",
-    icon: <AiIcons.AiFillHome />,
-  },
+export const HomePageLinks: LinkItem[] = [
   {
     title: "Login",
     path: "/login",
@@ -26,7 +21,16 @@ export const NonUserLinks: LinkItem[] = [
     path: "/register",
     icon: <FaIcons.FaChevronUp />,
 
-  }
+  },
+]
+
+export const NonUserLinks: LinkItem[] = [
+  {
+    title: "Home",
+    path: "/",
+    icon: <AiIcons.AiFillHome />,
+  },
+
 ];
 
 export const UserLinks: LinkItem[] = [
@@ -34,5 +38,5 @@ export const UserLinks: LinkItem[] = [
     title: "Dashboard",
     path: "/dashboard",
     icon: <AiIcons.AiFillDashboard />
-  }
+  },
 ];

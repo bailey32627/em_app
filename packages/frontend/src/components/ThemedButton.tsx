@@ -1,14 +1,15 @@
 import React, { ReactNode, useState } from 'react';
 import { useTheme } from '@em_app/shared';
 
-interface IconButtonProps {
+interface ThemedButtonProps {
   icon: ReactNode;   // any react element like <FaHome />
   onClick?: () => void;
   size?: number;     // optional size for padding
+  label?: string;   // optional label for button
 }
 
 
-export const ThemedButton: React.FC< IconButtonProps > = ({ icon, onClick, size=40, }) => {
+export const ThemedButton: React.FC< ThemedButtonProps > = ({ icon, onClick, size=40, label }) => {
   const { theme } = useTheme();
   const [ hovered, setHovered ] = useState( false );
 
@@ -19,9 +20,9 @@ export const ThemedButton: React.FC< IconButtonProps > = ({ icon, onClick, size=
       justifyContent: "center",
       width: size,
       height: size,
-      borderRadius: "50%",
+      borderRadius: "25%",
       border: `2px solid ${theme.text_color}`,
-      backgroundColor: hovered ? theme.surface_a20 : theme.primary_a40,
+      backgroundColor: hovered ?  theme.primary_a40 : theme.surface_a20,
       color: theme.text_color,
       cursor: "pointer",
       transition: "all 0.2s ease",
@@ -39,7 +40,7 @@ export const ThemedButton: React.FC< IconButtonProps > = ({ icon, onClick, size=
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false) }
   >
-    <span style={ styles.icon}>{icon}</span>
+    <span style={ styles.icon}>{icon}</span> {label}
   </button>
   );
 };

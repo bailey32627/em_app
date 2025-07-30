@@ -9,13 +9,8 @@ import { IconContext } from 'react-icons';
 // routing
 import { Link } from 'react-router-dom';
 
-// Data file
-import { NonUserLinks } from './LinkData';
-import { UserLinks } from './LinkData';
-
-// auth
-import { useAuth } from '@em_app/shared';
-import { useUI } from '../context/UIContext';
+// Data
+import { LinkItem } from './LinkData';
 
 // Styles
 import { ThemedLink } from "./ThemedLink";
@@ -23,14 +18,21 @@ import { ThemedLink } from "./ThemedLink";
 // theme
 import { useTheme } from "@em_app/shared";
 
+// uicontext
+import { useUI } from '../context/UIContext';
 
-const Navbar: React.FC = () => {
-  const { user } = useAuth();
 
-  const {isNavbarOpen} = useUI();
+type NavLinkProps = {
+  links: LinkItem[];
+  children?: React.ReactNode;
+};
+
+const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
   const {toggleNavbar} = useUI();
+  const {isNavbarOpen} = useUI();
+
   const {theme} = useTheme();
-  const links = user ? UserLinks : NonUserLinks;
+
 
   const styles: { [ key: string ]: React.CSSProperties } = {
     navbar: {
@@ -44,13 +46,14 @@ const Navbar: React.FC = () => {
       marginLeft: '2rem',
       fontSize: '2rem',
       background: 'none',
+      border: 'none',
     },
     nav_menu: {
       backgroundColor: theme.surface_a10,
       width: '240px',
       height: '100vh',
       display: 'flex',
-      justifyContent: 'center',
+      justifyContent: 'space-between',
       position: 'fixed',
       top: 0,
       left: isNavbarOpen ? 0 : '-240px',
@@ -82,14 +85,14 @@ const Navbar: React.FC = () => {
   return (
     <IconContext.Provider value={{ color: theme.primary_a0 }}>
       <div style={styles.navbar}>
-        <Link to="#" style={styles.menu_bars}>
-          <FaIcons.FaBars onClick={toggleNavbar} />
-        </Link>
+        <button onClick={()=>toggleNavbar()} style={styles.menu_bars}>
+          <FaIcons.FaBars />
+        </button>
       </div>
       <nav style={ styles.nav_menu }>
-        <ul style={styles.nav_menu_item} onClick={toggleNavbar}>
+        <ul style={styles.nav_menu_item} onClick={()=>toggleNavbar()}>
           <li style={styles.navbar_toggle}>
-            <Link to="#" className="menu-bars">
+            <Link to="#">
               <AiIcons.AiOutlineClose />
             </Link>
           </li>
@@ -108,6 +111,9 @@ const Navbar: React.FC = () => {
           })}
         </ul>
       </nav>
+
+      {/*Render passed-in children */}
+      <div>{children}</div>
     </IconContext.Provider>
   )
 };
