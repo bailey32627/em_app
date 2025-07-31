@@ -4,10 +4,28 @@ from rest_framework import serializers
 from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
+    organization = serializers.StringRelatedField()
+    member_divisions = serializers.StringRelatedField( many=True )
+    member_facilities = serializers.StringRelatedField( many=True )
+    admin_divisions = serializers.StringRelatedField( many=True )
+    admin_facilities = serializers.StringRelatedField( many=True )
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email' ]
-
+        fields = [
+            'id',
+            'username',
+            'email', 'fullname',
+            'is_organization_admin',
+            'is_division_admin',
+            'is_facility_admin',
+            'organization',
+            'member_divisions',
+            'member_facilities',
+            'admin_divisions',
+            'admin_facilities',
+          ]
+        extra_kwargs = { 'password': {'write_only': True }}
 
 
 class RegisterSerializer( serializers.ModelSerializer ):
@@ -21,9 +39,12 @@ class RegisterSerializer( serializers.ModelSerializer ):
     )
     password = serializers.CharField( write_only=True )
 
+    #optional fields
+    fullname = serializers.CharField( required=False, allow_blank=True )
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'email' ]
+        fields = ['id', 'username', 'password', 'email', 'fullname' ]
 
     def validate_password( self, value: str ):
         #minimum length
@@ -43,5 +64,6 @@ class RegisterSerializer( serializers.ModelSerializer ):
             username=validated_data['username'],
             password=validated_data['password'],
             email=validated_data['email'],
+            fullname=validated_data.get( 'fullname', ''),
         )
         return user

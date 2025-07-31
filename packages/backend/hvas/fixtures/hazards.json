@@ -1,0 +1,46 @@
+[
+  {
+    "model": "assessments.hazard",
+    "pk": 1,
+    "fields": {
+      "name": "Flood",
+      "description": "Risk of flash flooding, river flood, or coastal surge."
+    }
+  },
+  {
+    "model": "assessments.hazard",
+    "pk": 2,
+    "fields": {
+      "name": "Earthquake",
+      "description": "Seismic risk including structural damage and injury."
+    }
+  },
+  {
+    "model": "assessments.hazard",
+    "pk": 3,
+    "fields": {
+      "name": "Fire",
+      "description": "Risk of structural fire, wildfire, or explosion."
+    }
+  },
+  {
+    "model": "assessments.hazard",
+    "pk": 4,
+    "fields": {
+      "name": "Cyber Attack",
+      "description": "Risk of ransomware, data breach, or infrastructure disruption."
+    }
+  },
+  {
+    "model": "assessments.hazard",
+    "pk": 5,
+    "fields": {
+      "name": "Infectious Disease",
+      "description": "Pandemics, outbreaks, or other biologic threats."
+    }
+  }
+]
+
+
+// When Complete run
+//  python manage.py loaddata hazards

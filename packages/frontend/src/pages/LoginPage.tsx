@@ -2,8 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@em_app/shared'; // adjust import path if needed
 
+import { Navbar } from '../components/Navbar';
+import { LoginPageLinks } from '../components/LinkData';
+
+import { useTheme } from '@em_app/shared';
+import { MainContent } from '../components/MainContent';
+
 export default function LoginPage() {
   const { login } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
@@ -31,34 +38,87 @@ export default function LoginPage() {
     }
   };
 
+  const styles: { [key: string]: React.CSSProperties } = {
+    container: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      maxWidth: '400px',
+      margin: '3rem auto',
+      padding: '1.5rem 1.5rem',
+      backgroundColor: theme.surface_a10,
+      borderRadius: '20px',
+    },
+
+    heading: {
+      color: theme.text_color,
+      textAlign: 'center',
+      marginBottom: '2rem',
+    },
+    form: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.75rem',
+    },
+    input: {
+      padding: '0.75rem',
+      fontSize: '1rem',
+      borderRadius: '4px',
+      border: `1px solid ${theme.surface_a50}`,
+    },
+    button: {
+      padding: '0.75rem',
+      fontSize: '1rem',
+      borderRadius: '4px',
+      backgroundColor: theme.primary_a0,
+      color: '#fff',
+      border: 'none',
+      cursor: 'pointer',
+    },
+    errorBorder: {
+      borderColor: 'red',
+    },
+    error: {
+      color: 'red',
+      fontSize: '0.9rem',
+    },
+  };
+
   return (
-    <form onSubmit={handleLogin} style={{ maxWidth: 400, margin: 'auto' }}>
-      <h1>Login</h1>
-      {error && <div style={{ color: 'red', marginBottom: 10 }}>{error}</div>}
+    <Navbar links={ LoginPageLinks } >
+      <MainContent >
+        <div style={styles.container}>
+          <h2 style={styles.heading}>Login</h2>
 
-      <input
-        type="text"
-        placeholder="Username"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-        required
-        autoComplete="username"
-        style={{ width: '100%', marginBottom: 10, padding: 8 }}
-      />
+          <form onSubmit={handleLogin} style={styles.form}>
 
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        required
-        autoComplete="current-password"
-        style={{ width: '100%', marginBottom: 10, padding: 8 }}
-      />
+            <input
+              type="text"
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value) }
+              style={ styles.input }
+              required
+            />
 
-      <button type="submit" disabled={loading} style={{ width: '100%', padding: 10 }}>
-        {loading ? 'Logging in...' : 'Login'}
-      </button>
-    </form>
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              style={ styles.input }
+              onChange={(e) => setPassword( e.target.value ) }
+              required
+            />
+
+            <br/>
+
+            {error && <p style={styles.error}>{error}</p>}
+
+            <button type="submit" onClick={handleLogin} disabled={loading} style={styles.button}>
+              {loading ? 'logging in…' : 'Log In'}
+            </button >
+          </form>
+        </div>
+      </MainContent>
+    </Navbar>
   );
 }

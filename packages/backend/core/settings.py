@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'divisions',
     'invitations',
     'billing',
+    'hvas',
 ]
 
 MIDDLEWARE = [

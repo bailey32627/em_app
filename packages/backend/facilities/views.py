@@ -1,28 +1,32 @@
-from django.shortcuts import render
-from rest_framework import status
-from rest_framework.response import Response
 from rest_framework.views import APIView
-from organizations.models import Organization
+from rest_framework.response import Response
+from rest_framework import status, permissions
+from .models import Facility
 from divisions.models import Division
-from facilities.models import Facility
-
+from .serializers import FacilitySerializer
+from users.permissions import IsOrganizationAdmin
+from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import PermissionDenied
 # Create your views here.
+
 class CreateFacilityView( APIView ):
+    permission_classes = [ permissions.IsAuthenticated ]
+
     def post( self, request ):
         division_id = request.data.get( 'division' )
-        division = Division.Objects.get( id=division_id)
+        if not division_id:
+            return Response( {"detail": "Division ID is required."}, status=status.HTTP_400_BAD_REQUEST )
+
+        division = get_object_or_404( Division, id=division_id)
         organization = division.organization
-        subscription = system.subscription
 
-        if not subscription.is_with_limit():
-            return Response(
-                {"error": "Facility limit reached for this system's subscription" },
-                status=status.HTTP_403_FORBIDDEN
-            )
+        #check if use is the admin of the organization
+        if request.user != organization.owner:
+            raise PermissionDenied( "Only the organization admin can crate facilities" )
 
-        #proceed to create the org...
-        fac = Facilities.objects.create(
-            name=request.data.get( 'name' ),
-            division=division
+        #Create the facility
+        fac = Facility.object.create(
+            name = request.data.get( 'name' ),
+            division=division,
+            address = request.data.get('address' )
         )
-        return Response( {"success": True, "facility_id": fac.id}, status=status.HTTP_201_CREATED )

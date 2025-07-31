@@ -6,19 +6,20 @@ import { useTheme } from '@em_app/shared';
 
 interface IconButtonProps {
   path: string;   // where the link navigates to
-  icon: ReactNode;   // any react element like <FaHome />
+  icon?: ReactNode;   // any react element like <FaHome />
   label: string;     // label for the link
   onClick?: ()=> void;  // optional onClick event
+  color?: string;       // color of the text and icon
 }
 
-export const ThemedLink: React.FC< IconButtonProps > = ({ path, icon, label, onClick }) => {
+export const ThemedLink: React.FC< IconButtonProps > = ({ path, icon, label, onClick, color }) => {
   const { theme } = useTheme();
   const [ hovered, setHovered ] = useState( false );
 
   const styles: { [key: string]: React.CSSProperties } = {
     link: {
       textDecoration: 'none',
-      color: theme.text_color,
+      color: color ? color : theme.text_color,
       fontSize: '18px',
       width: '95%',
       height: '100%',
@@ -27,13 +28,13 @@ export const ThemedLink: React.FC< IconButtonProps > = ({ path, icon, label, onC
       padding: '0 16px',
       borderRadius: '4px',
       justifyContent: "left",
-      backgroundColor: hovered ? theme.primary_a40: theme.surface_a10,
+      backgroundColor: hovered ? theme.surface_a50: theme.surface_a10,
       cursor: "pointer",
       transition: "all 0.2s ease",
     },
     icon: {
       fontSize: '1.5em',
-      color: theme.primary_a20,
+      color: color ? color : theme.primary_a10,
       marginRight: '10px',
     },
   };
@@ -46,7 +47,7 @@ export const ThemedLink: React.FC< IconButtonProps > = ({ path, icon, label, onC
       onMouseLeave={ () => setHovered( false ) }
       onClick = {onClick}
     >
-    <span style={styles.icon}>{icon}</span>{label}
+    { icon && ( <span style={styles.icon}>{icon}</span> )}{label}
     </Link>
   )
 };

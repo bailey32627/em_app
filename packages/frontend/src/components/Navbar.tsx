@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 // ICONS
 import * as FaIcons from 'react-icons/fa';
@@ -7,19 +7,20 @@ import * as AiIcons from 'react-icons/ai';
 import { IconContext } from 'react-icons';
 
 // routing
-import { Link } from 'react-router-dom';
-
-// Data
-import { LinkItem } from './LinkData';
+import { Link, useNavigate} from 'react-router-dom';
 
 // Styles
 import { ThemedLink } from "./ThemedLink";
 
 // theme
 import { useTheme } from "@em_app/shared";
+import { useAuth } from "@em_app/shared";
 
 // uicontext
 import { useUI } from '../context/UIContext';
+
+// data
+import { LinkItem } from './LinkData';
 
 
 type NavLinkProps = {
@@ -27,20 +28,45 @@ type NavLinkProps = {
   children?: React.ReactNode;
 };
 
-const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
+export const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
   const {toggleNavbar} = useUI();
   const {isNavbarOpen} = useUI();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const {theme} = useTheme();
-
+  const {theme, toggleTheme } = useTheme();
 
   const styles: { [ key: string ]: React.CSSProperties } = {
     navbar: {
       backgroundColor: theme.surface_a10,
       height: '80px',
       display: 'flex',
-      justifyContent: 'start',
+      justifyContent: 'space-between',
       alignItems: 'center',
+    },
+    title: {
+      margin: '0 auto',
+      color: theme.text_color,
+    },
+    theme_icon: {
+      fontSize: '2rem',
+      background: 'none',
+      border: 'none',
+    },
+    user_name: {
+      color: theme.text_color,
+      background: 'none',
+      border: 'none',
+      marginRight: '1rem',
+      fontSize: '1.2rem',
+    },
+    logout: {
+      color: theme.text_color,
+      background: 'none',
+      borderColor: theme.surface_a50,
+      padding: '0.5rem',
+      margin: '2rem',
+      borderRadius: '4px',
     },
     menu_bars: {
       marginLeft: '2rem',
@@ -82,12 +108,31 @@ const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
     }
   };
 
+  const handleTheme = () => {
+    toggleTheme();
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate( '/login' );
+  }
+
+  const handleProfile = () => {
+    navigate( '/profile' );
+  }
+
+
   return (
-    <IconContext.Provider value={{ color: theme.primary_a0 }}>
+    <IconContext.Provider value={{ color: theme.primary_a10 }}>
       <div style={styles.navbar}>
-        <button onClick={()=>toggleNavbar()} style={styles.menu_bars}>
-          <FaIcons.FaBars />
-        </button>
+        <button onClick={()=>toggleNavbar()} style={styles.menu_bars}><FaIcons.FaBars /></button>
+        { user && (
+          <button onClick={handleProfile} style={ styles.user_name }>{user.fullname}</button>
+        )}
+        { user && (
+          <button onClick={handleLogout} style={ styles.logout }>Logout</button>
+        )}
+        <button onClick={handleTheme} style={ styles.theme_icon}><AiIcons.AiFillBulb /></button>
       </div>
       <nav style={ styles.nav_menu }>
         <ul style={styles.nav_menu_item} onClick={()=>toggleNavbar()}>
@@ -117,5 +162,3 @@ const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
     </IconContext.Provider>
   )
 };
-
-export default Navbar;
