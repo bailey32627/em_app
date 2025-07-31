@@ -8,23 +8,26 @@ interface ThemedCardProps {
   children?: React.ReactNode;
 };
 
-export const ThemedCard: React.FC< ThemedCardProps > = ({ width=400, height=500, zoom=false, children }) => {
+
+export const ThemedCard: React.FC< ThemedCardProps > = ({ width=400, height=250, zoom=false, children }) => {
   const { theme } = useTheme();
   const [ hovered, setHovered ] = useState( false );
 
   const styles: { [key: string]: React.CSSProperties } = {
     div: {
+      display: 'flex',
+      width: hovered ? ( zoom ? width*1.15 : width ) : width,
+      height: hovered ? ( zoom ? height*1.15 : height ) : height,
       alignItems: "center",
       justifyContent: "center",
-      width: hovered ? (zoom ? width*1.25 : width) : width,
-      height: hovered ? (zoom ? height*1.25 : height ) : height,
       borderRadius: "5%",
       border: 'none',
       backgroundColor: theme.surface_a10,
       color: theme.text_color,
       transition: "all 0.2s ease",
-      fontSize: hovered ? ( zoom ? '1.25rem' : '1rem' ): '1rem',
-      padding: '2rem',
+      fontSize: hovered ? ( zoom ? '1.15rem' : '1rem' ): '1rem',
+      padding: '1rem',
+      margin: hovered ? ( zoom ? '0' : '1rem' ) : '1rem',
     },
   };
 

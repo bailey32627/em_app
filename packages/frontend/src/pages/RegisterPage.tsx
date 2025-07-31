@@ -13,9 +13,7 @@ import { useTheme } from '@em_app/shared';
 const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
 
-  const [ firstname, setFirstname ] = useState( '' );
-
-  const [ lastname, setLastname ] = useState( '' );
+  const [ fullname, setFullname ] = useState( '' );
 
   const [ email, setEmail ] = useState( '' );
   const [ emailStatus, setEmailStatus ] = useState< 'checking' | 'available' | 'taken' | null>(null);
@@ -120,8 +118,7 @@ const RegisterPage: React.FC = () => {
         username,
         password,
         email,
-        firstname,
-        lastname
+        fullname
       });
 
       // after successful register, redirect to login
@@ -197,9 +194,6 @@ const RegisterPage: React.FC = () => {
       color: 'red',
       fontSize: '0.9rem',
     },
-    para: {
-      color: theme.text_color,
-    }
   };
 
   return (
@@ -212,25 +206,26 @@ const RegisterPage: React.FC = () => {
             {error && <p style={styles.error}>{error}</p>}
 
             <input
+              type="text"
+              title='Enter your first name, optional'
+              placeholder="Full Name"
+              value={fullname}
+              onChange = { (e) => setFullname( e.target.value ) }
+              style = { styles.input }
+            />
+
+            <input
               type="email"
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               onBlur={handleEmailBlur} // check when user leaves field
-              style={{
-                ...styles.input,
-                border: emailStatus === 'taken' ? '2px solid red' :
-                        emailStatus === 'available' ? '3px solid green':
-                        emailStatus === 'checking' ? '1px solid #ccc' : '1px solid #ccc'
-              }}
+              style={ styles.input }
               required
             />
             {emailStatus === 'taken' && (
               <div
-                style={{
-                  color : 'red',
-                  marginTop: 4,
-                }}
+                style={ styles.error }
               >
                 {emailMessage}
               </div>
@@ -242,21 +237,12 @@ const RegisterPage: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value) }
               onBlur={handleUsernameBlur} // check when user leaves field
-              style={
-                { ...styles.input,
-                  border: usernameStatus === 'taken' ? '2px solid red' :
-                          usernameStatus === 'available' ? '3px solid green':
-                          usernameStatus === 'checking' ? '1px solid #ccc' : '1px solid #ccc'
-                }
-              }
+              style={ styles.input }
               required
             />
             {usernameStatus === 'taken' &&(
               <div
-                style={{
-                  color: 'red',
-                  marginTop: 4,
-                }}
+                style={ styles.error }
               >
                 {usernameMessage}
               </div>
@@ -267,10 +253,7 @@ const RegisterPage: React.FC = () => {
               placeholder="Password"
               value={password}
               onChange={handlePasswordChange}
-              style={{
-                ...styles.input,
-                border: passwordError ?  "2px solid red" : password ? "3px solid green" : "1px solid #ccc"
-              }}
+              style={ styles.input }
               required
             />
             { passwordError && (
@@ -285,25 +268,6 @@ const RegisterPage: React.FC = () => {
               )
             }
 
-            <br/>
-
-              <input
-                type="text"
-                title='Enter your first name, optional'
-                placeholder="First Name"
-                value={firstname}
-                onChange = { (e) => setFirstname( e.target.value ) }
-                style = { styles.input }
-              />
-
-              <input
-                type="text"
-
-                placeholder="Last Name"
-                value={lastname}
-                onChange = { (e)=> setLastname( e.target.value ) }
-                style = { styles.input }
-              />
             <br />
 
 

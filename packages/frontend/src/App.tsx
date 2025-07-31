@@ -1,4 +1,4 @@
-import './App.css';
+
 import { AuthProvider } from '@em_app/shared';
 import { ThemeProvider } from '@em_app/shared';
 

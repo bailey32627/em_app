@@ -8,6 +8,7 @@ import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 import RegisterPage from '../pages/RegisterPage';
 import SystemUpgradePage from '../pages/SystemUpgradePage';
+import ProfilePage from '../pages/ProfilePage';
 
 const Navigation: React.FC = () => {
   const { user, loading } = useAuth();
@@ -23,6 +24,10 @@ const Navigation: React.FC = () => {
         <Route
           path="/dashboard"
           element={user ? <DashboardPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/profile"
+          element={user ? <ProfilePage /> : <Navigate to="/login" replace /> }
         />
         <Route
           path="/upgrade"

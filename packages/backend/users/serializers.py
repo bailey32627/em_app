@@ -4,10 +4,28 @@ from rest_framework import serializers
 from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
+    organization = serializers.StringRelatedField()
+    member_divisions = serializers.StringRelatedField( many=True )
+    member_facilities = serializers.StringRelatedField( many=True )
+    admin_divisions = serializers.StringRelatedField( many=True )
+    admin_facilities = serializers.StringRelatedField( many=True )
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'first_name', 'last_name' ]
-
+        fields = [
+            'id',
+            'username',
+            'email', 'fullname',
+            'is_organization_admin',
+            'is_division_admin',
+            'is_facility_admin',
+            'organization',
+            'member_divisions',
+            'member_facilities',
+            'admin_divisions',
+            'admin_facilities',
+          ]
+        extra_kwargs = { 'password': {'write_only': True }}
 
 
 class RegisterSerializer( serializers.ModelSerializer ):
@@ -22,12 +40,11 @@ class RegisterSerializer( serializers.ModelSerializer ):
     password = serializers.CharField( write_only=True )
 
     #optional fields
-    first_name = serializers.CharField( required=False, allow_blank=True )
-    last_name = serializers.CharField( required=False, allow_blank=True )
+    fullname = serializers.CharField( required=False, allow_blank=True )
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'password', 'email', 'first_name', 'last_name' ]
+        fields = ['id', 'username', 'password', 'email', 'fullname' ]
 
     def validate_password( self, value: str ):
         #minimum length
@@ -47,7 +64,6 @@ class RegisterSerializer( serializers.ModelSerializer ):
             username=validated_data['username'],
             password=validated_data['password'],
             email=validated_data['email'],
-            first_name=validated_data.get( 'first_name', ''),
-            last_name=validated_data.get( 'last_name', '' )
+            fullname=validated_data.get( 'fullname', ''),
         )
         return user

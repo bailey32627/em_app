@@ -113,7 +113,7 @@ export const ThemeProvider: React.FC< ThemeProviderProps > = ( { children } ) =>
   };
 
   return (
-    <ThemeContext.Provider value = { ThemeContextValue }>
+    <ThemeContext.Provider value = {ThemeContextValue}>
       {children }
     </ThemeContext.Provider>
   );
