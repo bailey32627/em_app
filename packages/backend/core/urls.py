@@ -23,5 +23,6 @@ urlpatterns = [
     path('api/check-username/', views.check_username, name='check_username'),
     path('api/check-email/', views.check_email, name='check_email' ),
     path( 'api/', include( 'users.urls') ),
+    path( 'api/', include( 'organizations.urls') ),
     path( 'api/invitations/', include( "invitations.urls" )),
 ]

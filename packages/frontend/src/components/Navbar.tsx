@@ -52,6 +52,16 @@ export const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
       fontSize: '2rem',
       background: 'none',
       border: 'none',
+      cursor: 'pointer',
+    },
+    home_icon: {
+      position: 'relative',
+      fontSize: '2rem',
+      background: 'none',
+      border: 'none',
+      cursor: 'pointer',
+      left: isNavbarOpen ? '160px' : 0,
+      transition: 'left 0.3s ease',
     },
     user_name: {
       color: theme.text_color,
@@ -59,6 +69,7 @@ export const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
       border: 'none',
       marginRight: '1rem',
       fontSize: '1.2rem',
+      cursor: 'pointer',
     },
     logout: {
       color: theme.text_color,
@@ -67,12 +78,14 @@ export const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
       padding: '0.5rem',
       margin: '2rem',
       borderRadius: '4px',
+      cursor: 'pointer',
     },
     menu_bars: {
       marginLeft: '2rem',
       fontSize: '2rem',
       background: 'none',
       border: 'none',
+      cursor: 'pointer',
     },
     nav_menu: {
       backgroundColor: theme.surface_a10,
@@ -121,18 +134,26 @@ export const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
     navigate( '/profile' );
   }
 
+  const handleHome = () => {
+    navigate( '/dashboard' );
+  }
+
 
   return (
     <IconContext.Provider value={{ color: theme.primary_a10 }}>
       <div style={styles.navbar}>
         <button onClick={()=>toggleNavbar()} style={styles.menu_bars}><FaIcons.FaBars /></button>
-        { user && (
-          <button onClick={handleProfile} style={ styles.user_name }>{user.fullname}</button>
-        )}
-        { user && (
-          <button onClick={handleLogout} style={ styles.logout }>Logout</button>
-        )}
-        <button onClick={handleTheme} style={ styles.theme_icon}><AiIcons.AiFillBulb /></button>
+        { user && <button onClick={()=>handleHome()} style={styles.home_icon}><AiIcons.AiFillHome /></button> }
+        <h1 style={styles.title}>EM-Ops</h1>
+        <span>
+          { user && (
+            <button onClick={handleProfile} style={ styles.user_name }>{user.fullname}</button>
+          )}
+          { user && (
+            <button onClick={handleLogout} style={ styles.logout }>Logout</button>
+          )}
+          <button onClick={handleTheme} style={ styles.theme_icon}><AiIcons.AiFillBulb /></button>
+        </span>
       </div>
       <nav style={ styles.nav_menu }>
         <ul style={styles.nav_menu_item} onClick={()=>toggleNavbar()}>
