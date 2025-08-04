@@ -5,6 +5,7 @@ import stripe
 
 from divisions.models import Division
 from facilities.models import Facility
+from users.permissions import IsOrganizationAdmin
 
 # Create your views here.
 
@@ -16,17 +17,14 @@ class OrganizationUpgradeView(APIView):
     def post(self, request):
         name = request.data.get("name")
         user = request.user
-
         #ensure user is not a system admin already
         if Organization.objects.filter( owner=user).exists():
             return Response(
                 {"detail": "You already own an organization." },
                 status=status.HTTP_400_BAD_REQUEST
             )
-
         # Create the system
         system = Organization.objects.create(name=name, owner=user)
-
         # TODO: Store system ID in metadata for post-checkout logic
 
         checkout_session = stripe.checkout.Session.create(
@@ -43,5 +41,30 @@ class OrganizationUpgradeView(APIView):
                 "system_id": system.id,
             }
         )
-
         return Response({ "checkout_url": checkout_session.url })
+
+
+class ManageOrganizationView( APIView ):
+    permission_classes = [ IsAuthenticated, IsOrganizationAdmin ]
+
+    def get( self, request ):
+        org = request.user.organization
+        divisions = org.divisiions.prefetch_related( 'facilities').all()
+        return Response( {
+            "organization": {
+                "id": org.id,
+                "name": org.name,
+                "stripe_subscription_id": org.stripe_subscription_id,
+            },
+            "divisions": [
+                {
+                    "id": div.id,
+                    "name": div.name,
+                    "facilities": [
+                        { "id": f.id, "name": f.name }
+                        for f in div.facilities.all()
+                    ],
+                }
+                for div in divisions
+            ],
+        })

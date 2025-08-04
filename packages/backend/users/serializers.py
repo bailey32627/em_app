@@ -2,6 +2,9 @@ import re
 from rest_framework.validators import UniqueValidator
 from rest_framework import serializers
 from .models import User
+from facilities.models import Facility
+from divisions.models import Division
+from organizations.models import Organization
 
 class UserSerializer(serializers.ModelSerializer):
     organization = serializers.StringRelatedField()
@@ -26,6 +29,7 @@ class UserSerializer(serializers.ModelSerializer):
             'admin_facilities',
           ]
         extra_kwargs = { 'password': {'write_only': True }}
+
 
 
 class RegisterSerializer( serializers.ModelSerializer ):
@@ -67,3 +71,46 @@ class RegisterSerializer( serializers.ModelSerializer ):
             fullname=validated_data.get( 'fullname', ''),
         )
         return user
+
+
+class FacilityNestedSerializer( serializers.ModelSerializer ):
+    division = serializers.StringRelatedField()
+    class Meta:
+        model = Facility
+        fields = ( 'id', 'name', 'division' )
+
+class DivisionNestedSerializer( serializers.ModelSerializer ):
+    class Meta:
+        model = Division
+        fields = ('id', 'name' )
+
+class OrganizationSerializer( serializers.ModelSerializer ):
+    is_owner = serializers.SerializerMethodField()
+    subscription_active = serializers.SerializerMethodField()
+    class Meta:
+        model = Organization
+        fields = ('id', 'name', 'is_owner', 'subscription_active' )
+
+    def get_is_owner( self, obj ):
+        return obj.owner == self.context['request'].user
+
+    def get_subscription_active( self, obj ):
+        return bool( obj.stripe_subscription_id )
+
+    def get_facility_count( self, obj ):
+        return Facility.objects.filter( division__organization=obj).count()
+
+
+class UserProfileSerializer( serializers.ModelSerializer ):
+    organization = OrganizationSerializer()
+    admin_divisions = DivisionNestedSerializer( many=True )
+    admin_facilities = FacilityNestedSerializer( many=True )
+    member_divisions =  DivisionNestedSerializer( many=True )
+    member_facilities =  FacilityNestedSerializer( many=True )
+
+    class Meta:
+        model = User
+        fields = (
+            'id', 'fullname', 'email', 'organization', 'admin_divisions',
+            'admin_facilities', 'member_divisions', 'member_facilities'
+        )

@@ -15,7 +15,6 @@ export const ThemedCard: React.FC< ThemedCardProps > = ({ width=400, height=250,
 
   const styles: { [key: string]: React.CSSProperties } = {
     div: {
-      display: 'flex',
       width: hovered ? ( zoom ? width*1.15 : width ) : width,
       height: hovered ? ( zoom ? height*1.15 : height ) : height,
       alignItems: "center",

@@ -9,6 +9,7 @@ import DashboardPage from '../pages/DashboardPage';
 import RegisterPage from '../pages/RegisterPage';
 import SystemUpgradePage from '../pages/SystemUpgradePage';
 import ProfilePage from '../pages/ProfilePage';
+import HVAPage from '../pages/HvaPage';
 
 const Navigation: React.FC = () => {
   const { user, loading } = useAuth();
@@ -18,9 +19,21 @@ const Navigation: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/"
+          element={user? <DashboardPage/> : <HomePage />}
+        />
+
+        <Route
+          path="/register"
+          element={user ? <DashboardPage/> : <RegisterPage />}
+        />
+
+        <Route
+          path="/login"
+          element={user ? <DashboardPage /> : <LoginPage />}
+        />
+
         <Route
           path="/dashboard"
           element={user ? <DashboardPage /> : <Navigate to="/login" replace />}
@@ -32,6 +45,10 @@ const Navigation: React.FC = () => {
         <Route
           path="/upgrade"
           element={user ? <SystemUpgradePage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/hva"
+          element={user ? <HVAPage /> : < Navigate to="/login" replace /> }
         />
       </Routes>
     </Router>

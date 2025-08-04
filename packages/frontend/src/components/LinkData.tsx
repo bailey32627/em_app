@@ -55,11 +55,31 @@ export const LoginPageLinks: LinkItem[] = [
 // dashboard Page links ----------------------------------
 export const DashboardPageLinks: LinkItem[] = [
   {
+    title: "HVA",
+    path: "/hva",
+    icon: <AiIcons.AiFillAlert />
+  },
+  {
     title: "Profile",
     path: "/profile",
     icon: <AiIcons.AiFillProfile />
   },
 ];
+
+// Profile Page Links ------------------------------------
+export const ProfilepageLinks: LinkItem[] = [
+  {
+    title: "Dashboard",
+    path: "/dashboard",
+    icon: <AiIcons.AiOutlinePartition/>
+  },
+  {
+    title: "HVA",
+    path: "/hva",
+    icon: <AiIcons.AiFillAlert />
+  },
+];
+
 // HVA page links ----------------------------------------
 
 // Analysis page Links -----------------------------------
