@@ -1,17 +1,14 @@
-import React, { ReactNode, useState } from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '@em_app/shared';
 
 interface ThemedButtonProps {
-  icon?: ReactNode;   // any react element like <FaHome />
   onClick?: () => void;
-  width? : number;
-  height? : number;
-  label?: string;   // optional label for button
   children?: React.ReactNode;
+  style?: React.CSSProperties;
 }
 
 
-export const ThemedButton: React.FC< ThemedButtonProps > = ({ icon, onClick, width, height = 40, children }) => {
+export const ThemedButton: React.FC< ThemedButtonProps > = ({ onClick, children, style }) => {
   const { theme } = useTheme();
   const [ hovered, setHovered ] = useState( false );
 
@@ -20,29 +17,22 @@ export const ThemedButton: React.FC< ThemedButtonProps > = ({ icon, onClick, wid
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      width: width ? width : 'max_content',
-      height: height ? height : 'max_content',
       borderRadius: "20px",
-      border: `2px solid ${theme.text_color}`,
+      border: `2px solid ${theme.primary_a0}`,
       backgroundColor: hovered ?  theme.primary_a40 : theme.surface_a20,
       color: theme.text_color,
       cursor: "pointer",
       transition: "all 0.2s ease",
-    },
-    icon: {
-      fontSize: height * 0.5,
-      color: theme.primary_a20,
-    },
+    }
   };
 
   return (
     <button
-    style={styles.button}
+    style={{ ...styles.button, ...style} }
     onClick={onClick}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false) }
   >
-    <span style={ styles.icon}>{icon}</span>
     {children}
   </button>
   );

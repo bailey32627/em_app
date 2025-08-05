@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import ManageOrganizationView
+from .views import ManageOrganizationView, CreateOrganizationView
 
 urlpatterns = [
-    path( 'api/organization/manage/', ManageOrganizationView.as_view(), name='organization_manage')
+    path( 'organization/create/', CreateOrganizationView.as_view(), name='create_organization'),
+    path( 'organization/manage/', ManageOrganizationView.as_view(), name='organization_manage')
 ]
