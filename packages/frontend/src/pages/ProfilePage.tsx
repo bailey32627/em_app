@@ -7,13 +7,18 @@ import { Navbar } from '../components/Navbar';
 import { ProfilepageLinks } from '../components/LinkData';
 import { MainContent } from '../components/MainContent';
 import { ThemedButton } from '../components/ThemedButton';
+import { ThemedCard } from '../components/ThemedCard';
+import { useNavigate} from 'react-router-dom';
 
 import { useTheme } from '@em_app/shared';
+import { useAuth } from '@em_app/shared';
 
 
 const ProfilePage: React.FC = () => {
   const [ profile, setProfile ] = useState< UserProfile | null >( null );
   const { theme } = useTheme();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect( () => {
     axios.get( `${API_BASE_URL}/api/user/me`)
@@ -22,7 +27,12 @@ const ProfilePage: React.FC = () => {
   }, [] );
 
   const handleSubscription = () => {
-    console.log( 'subscribe' );
+    if( !user ) navigate( '/login' );
+    if( user && user.is_organization_admin ) navigate( '/org_management');
+    if( user && user.is_division_admin ) navigate( '/divsion_management' );
+    if( user && user.is_facility_admin ) navigate( '/facility_management' );
+    if( user && !user.organization ) navigate( '/create_organization' );
+    if( user && user.organization ) navigate( '/facility_member' );
   }
 
   const styles: { [key: string]: React.CSSProperties } = {
@@ -32,14 +42,15 @@ const ProfilePage: React.FC = () => {
     },
     div: {
       display: 'inline-block',
-      backgroundColor: theme.surface_a10,
-      width: "90%",
-      padding: "10px 20px 10px 20px",
-      borderRadius: '10px',
-      marginTop: '10px',
+      fontSize: '1rem',
+      paddingLeft: '1.5rem',
+      paddingTop: '1rem',
     },
     text: {
       color: theme.text_color,
+    },
+    button: {
+      padding: '10px',
     },
   }
 
@@ -51,14 +62,14 @@ const ProfilePage: React.FC = () => {
       <MainContent>
         <div style={styles.container}>
 
-          <div style={styles.div}>
+          <ThemedCard style={styles.div}>
             <h2 style={styles.text}>Profile</h2>
             <p style={styles.text}><strong>Name:</strong> {profile.fullname}</p>
             <p style={styles.text}><strong>Email:</strong> {profile.email}</p>
             <p style={styles.text}><strong>Organization:</strong> { profile.organization ? profile.organization.name : "" }</p>
-          </div>
+          </ThemedCard>
 
-          <div style={styles.div}>
+          <ThemedCard style={styles.div}>
             <h3 style={styles.text}>Organization</h3>
             { profile.organization ?
               profile.organization.is_owner ?
@@ -69,11 +80,14 @@ const ProfilePage: React.FC = () => {
                 :
                   <p style={styles.text}>You are a member of the {profile.organization.name} Organization.</p>
               :
-              <ThemedButton onClick={handleSubscription} width={200} height={50}>Subscribe an Organization</ThemedButton>
+              <p>You are not part of an Organization</p>
             }
-          </div>
+            { profile.organization ? <ThemedButton onClick={handleSubscription}>Manage Organization</ThemedButton> :
+              <ThemedButton onClick={handleSubscription} style={styles.button}>Create An Organization</ThemedButton>
+            }
+          </ThemedCard>
 
-          <div style={styles.div}>
+          <ThemedCard style={styles.div}>
             <h3 style={styles.text}>Division Admin Of: </h3>
             { profile.admin_divisions.length > 0 ?(
                 <ul style={styles.text}>
@@ -83,9 +97,9 @@ const ProfilePage: React.FC = () => {
                 </ul>
               ) : <p style={styles.text}>None</p>
             }
-          </div>
+          </ThemedCard>
 
-          <div style={styles.div}>
+          <ThemedCard style={styles.div}>
             <h3 style={styles.text} >Facility Admin Of: </h3>
             { profile.admin_facilities.length > 0 ? (
                 <ul style={styles.text}>
@@ -95,9 +109,9 @@ const ProfilePage: React.FC = () => {
                 </ul>
               ) : <p style={styles.text}>None</p>
             }
-          </div>
+          </ThemedCard>
 
-          <div style={styles.div}>
+          <ThemedCard style={styles.div}>
             <h3 style={styles.text}>Member of Facility:</h3>
             { profile.member_facilities.length > 0 ? (
               <ul style={styles.text}>
@@ -108,7 +122,7 @@ const ProfilePage: React.FC = () => {
             ) : <p style={styles.text}>None</p>
 
             }
-          </div>
+          </ThemedCard>
 
         </div>
       </MainContent>

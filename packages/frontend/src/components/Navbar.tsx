@@ -118,6 +118,11 @@ export const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
     nav_menu_item: {
       width: '100%',
       paddingLeft: '20px',
+    },
+    link_icon: {
+      fontSize: '1.5rem',
+      paddingLeft: '8px',
+      paddingRight: '8px',
     }
   };
 
@@ -168,9 +173,10 @@ export const Navbar: React.FC<NavLinkProps>= ({ links, children }) => {
               <li key={index} style={styles.nav_text}>
                 <ThemedLink
                   path={item.path}
-                  icon={item.icon}
-                  label={item.title}
-                ></ThemedLink>
+                >
+                  <span style={styles.link_icon}>{item.icon}</span>
+                  {item.title}
+                </ThemedLink>
 
               </li>
             );

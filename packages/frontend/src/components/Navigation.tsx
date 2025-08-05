@@ -7,9 +7,14 @@ import HomePage from '../pages/HomePage'; // replace with HomePage
 import LoginPage from '../pages/LoginPage';
 import DashboardPage from '../pages/DashboardPage';
 import RegisterPage from '../pages/RegisterPage';
-import SystemUpgradePage from '../pages/SystemUpgradePage';
 import ProfilePage from '../pages/ProfilePage';
 import HVAPage from '../pages/HvaPage';
+
+import CreateOrgPage from '../pages/CreateOrgPage';
+import OrgManagementPage from '../pages/OrgManagementPage';
+import DivisionManagementPage from '../pages/DivisionManagementPage';
+import FacilityManagementPage from '../pages/FacilityManagementPage';
+
 
 const Navigation: React.FC = () => {
   const { user, loading } = useAuth();
@@ -43,13 +48,26 @@ const Navigation: React.FC = () => {
           element={user ? <ProfilePage /> : <Navigate to="/login" replace /> }
         />
         <Route
-          path="/upgrade"
-          element={user ? <SystemUpgradePage /> : <Navigate to="/login" replace />}
+          path="/create_organization"
+          element={user ? user.is_organization_admin ? <OrgManagementPage /> : <CreateOrgPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/org_management"
+          element={user ? <OrgManagementPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/division_management"
+          element={user ? user.is_division_admin ? <DivisionManagementPage /> : <DashboardPage /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/facility_management"
+          element={user ? user.is_facility_admin ? <FacilityManagementPage /> : <DashboardPage /> : <Navigate to="/login" replace />}
         />
         <Route
           path="/hva"
           element={user ? <HVAPage /> : < Navigate to="/login" replace /> }
         />
+
       </Routes>
     </Router>
   );

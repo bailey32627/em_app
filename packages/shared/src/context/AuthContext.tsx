@@ -3,6 +3,18 @@ import axios from 'axios';
 import { API_BASE_URL } from '../api/config';
 import { tokenStorage } from '../storage/tokenStorage';
 
+interface Facility {
+  id: number;
+  name: string;
+}
+
+
+interface Division {
+  id: number;
+  name: string;
+}
+
+
 interface User {
   id: number;
   username: string;
@@ -11,10 +23,10 @@ interface User {
   is_organization_admin: boolean;
   is_division_admin: boolean;
   is_facility_admin: boolean;
-  member_divisions: string[];
-  member_facilities: string[];
-  admin_divisions: string[];
-  admin_facilities: string[];
+  member_divisions: Division[];
+  member_facilities: Facility[];
+  admin_divisions: Division[];
+  admin_facilities: Facility[];
 }
 
 interface AuthContextType {
@@ -23,6 +35,11 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<void>;
   logout: () => void;
   refreshAccessToken: () => Promise<string | null>;
+
+  selectedDivision: Division | null;
+  setSelectedDivision: (division: Division | null )=> void;
+  selectedFacility: Facility | null;
+  setSelectedFacility: (facility: Facility | null ) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,6 +48,8 @@ let refreshTimeout: ReturnType<typeof setTimeout> | null = null;
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [ selectedDivision, setSelectedDivision ] = useState< Division | null >( null );
+  const [ selectedFacility, setSelectedFacility ] = useState< Facility | null >( null );
   const [loading, setLoading] = useState(true);
   const isMounted = useRef(true);
 
@@ -103,6 +122,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (isMounted.current) {
           setUser(res.data);
           scheduleRefresh(access);
+          if( res.data.member_divisions.length === 1 ){
+            setSelectedDivision( res.data.division[ 0 ] );
+          }
+          if( res.data.member_facilities.length === 1 ){
+            setSelectedFacility( res.data.facilities[ 0 ] );
+          }
         }
       }
     } catch (err) {
@@ -161,7 +186,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refreshAccessToken }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      login,
+      logout,
+      refreshAccessToken,
+      selectedDivision,
+      selectedFacility,
+      setSelectedDivision,
+      setSelectedFacility
+    }}>
       {children}
     </AuthContext.Provider>
   );

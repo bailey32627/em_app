@@ -10,10 +10,10 @@ const HomePage = () => {
   return (
       <Navbar links={HomePageLinks} >
         <MainContent>
-          <ThemedCard zoom={true}>
+          <ThemedCard>
             <h4>EM-Ops Home</h4>
           </ThemedCard>
-          <ThemedCard zoom={true}>
+          <ThemedCard>
             <h4>Another</h4>
           </ThemedCard>
         </MainContent>
