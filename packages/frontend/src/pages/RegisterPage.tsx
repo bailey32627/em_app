@@ -5,8 +5,9 @@ import { useNavigate } from 'react-router-dom';
 
 //UIContext
 import { MainContent } from '../components/MainContent';
-import { Navbar } from '../components/Navbar';
-import { RegisterPageLinks } from '../components/LinkData';
+import { ToolBar, ToolBarItem } from '../components/ToolBar';
+
+import { AiFillHome, AiFillCaretRight } from 'react-icons/ai';
 
 import { useTheme } from '@em_app/shared';
 
@@ -31,6 +32,27 @@ const RegisterPage: React.FC = () => {
   const [ error, setError ] = useState( '' );
 
   const { theme } = useTheme();
+
+  const handleHome = () => {
+    navigate( '/' );
+  }
+
+  const handleLogin = () => {
+    navigate( '/login' );
+  }
+
+  const toolBarItems: ToolBarItem[] = [
+    {
+      title: 'Home',
+      icon: <AiFillHome />,
+      onClick: handleHome,
+    },
+    {
+      title: 'Login',
+      icon: <AiFillCaretRight />,
+      onClick: handleLogin,
+    }
+  ];
 
 
   // validate the password
@@ -197,7 +219,7 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <Navbar links={RegisterPageLinks }>
+    <ToolBar items={toolBarItems }>
       <MainContent>
         <div style={styles.container}>
           <h2 style={styles.heading}>Create an Account</h2>
@@ -280,7 +302,7 @@ const RegisterPage: React.FC = () => {
           </p>
         </div>
     </MainContent>
-  </Navbar>
+  </ToolBar>
   );
 };
 

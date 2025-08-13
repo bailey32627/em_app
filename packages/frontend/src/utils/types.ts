@@ -26,6 +26,7 @@ export interface UserProfile {
   id: number;
   fullname: string;
   email: string;
+  is_organization_admin: boolean;
   organization: Organization;
   admin_divisions: Division[];
   admin_facilities: Facility[];

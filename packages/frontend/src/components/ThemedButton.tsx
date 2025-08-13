@@ -4,11 +4,12 @@ import { useTheme } from '@em_app/shared';
 interface ThemedButtonProps {
   onClick?: () => void;
   children?: React.ReactNode;
+  disabled?: boolean;
   style?: React.CSSProperties;
 }
 
 
-export const ThemedButton: React.FC< ThemedButtonProps > = ({ onClick, children, style }) => {
+export const ThemedButton: React.FC< ThemedButtonProps > = ({ onClick, children, disabled, style }) => {
   const { theme } = useTheme();
   const [ hovered, setHovered ] = useState( false );
 
@@ -17,9 +18,9 @@ export const ThemedButton: React.FC< ThemedButtonProps > = ({ onClick, children,
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
-      borderRadius: "20px",
-      border: `2px solid ${theme.primary_a0}`,
-      backgroundColor: hovered ?  theme.primary_a40 : theme.surface_a20,
+      borderRadius: "8px",
+      border: `1px solid ${theme.surface_a50}`,
+      backgroundColor: hovered ?  theme.surface_a50 : theme.surface_a10,
       color: theme.text_color,
       cursor: "pointer",
       transition: "all 0.2s ease",
@@ -32,6 +33,7 @@ export const ThemedButton: React.FC< ThemedButtonProps > = ({ onClick, children,
     onClick={onClick}
     onMouseEnter={() => setHovered(true)}
     onMouseLeave={() => setHovered(false) }
+    disabled={disabled}
   >
     {children}
   </button>

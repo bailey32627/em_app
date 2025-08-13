@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@em_app/shared'; // adjust import path if needed
 
-import { Navbar } from '../components/Navbar';
-import { LoginPageLinks } from '../components/LinkData';
+import { ToolBar, ToolBarItem } from '../components/ToolBar';
+import { AiFillHome, AiFillCaretRight } from 'react-icons/ai';
 
 import { useTheme } from '@em_app/shared';
 import { MainContent } from '../components/MainContent';
@@ -17,6 +17,28 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const handleHome = () => {
+    navigate( '/' );
+  }
+
+  const handleRegister = () => {
+    navigate( '/register' );
+  }
+
+  const toolBarItems: ToolBarItem[] = [
+    {
+      title:'Home',
+      onClick: handleHome,
+      icon: <AiFillHome />
+    },
+    {
+      title: 'Register',
+      onClick: handleRegister,
+      icon: <AiFillCaretRight />,
+    },
+
+  ];
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,7 +106,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Navbar links={ LoginPageLinks } >
+    <ToolBar items={ toolBarItems } >
       <MainContent >
         <div style={styles.container}>
           <h2 style={styles.heading}>Login</h2>
@@ -119,6 +141,6 @@ export default function LoginPage() {
           </form>
         </div>
       </MainContent>
-    </Navbar>
+    </ToolBar>
   );
 }

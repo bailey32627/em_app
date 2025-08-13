@@ -8,12 +8,12 @@ type Props = {
 };
 
 export const MainContent: React.FC<Props> = ( { children, style } ) => {
-  const { isNavbarOpen } = useUI();
+  const { isToolbarOpen } = useUI();
   const { theme } = useTheme();
 
   const styles:{ [key: string ]: React.CSSProperties } = {
     div: {
-      marginLeft: isNavbarOpen ? 240 : 0, // adjust for navbar width
+      marginLeft: isToolbarOpen ? 240 : 0, // adjust for navbar width
       transition: 'margin-left 0.3s ease',
       padding: '1rem',
       height: '100vh',

@@ -8,10 +8,18 @@ interface Facility {
   name: string;
 }
 
-
 interface Division {
   id: number;
   name: string;
+  facilities: Facility[];
+}
+
+interface Organization {
+  id: number;
+  name: string;
+  is_owner: boolean;
+  subscription_active: boolean;
+  facility_count: number;
 }
 
 
@@ -19,7 +27,8 @@ interface User {
   id: number;
   username: string;
   fullname: string;
-  organization: string;
+  email: string;
+  organization: Organization;
   is_organization_admin: boolean;
   is_division_admin: boolean;
   is_facility_admin: boolean;

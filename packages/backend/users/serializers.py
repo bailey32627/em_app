@@ -6,19 +6,53 @@ from facilities.models import Facility
 from divisions.models import Division
 from organizations.models import Organization
 
+
+class FacilityNestedSerializer( serializers.ModelSerializer ):
+    division = serializers.StringRelatedField()
+    class Meta:
+        model = Facility
+        fields = ( 'id', 'name', 'division' )
+
+class DivisionNestedSerializer( serializers.ModelSerializer ):
+    class Meta:
+        model = Division
+        fields = ('id', 'name' )
+
+class OrganizationSerializer( serializers.ModelSerializer ):
+    is_owner = serializers.SerializerMethodField()
+    subscription_active = serializers.SerializerMethodField()
+    facility_count = serializers.SerializerMethodField()
+    class Meta:
+        model = Organization
+        fields = ('id', 'name', 'is_owner', 'subscription_active', 'facility_count' )
+
+    def get_is_owner( self, obj ):
+        request = self.context.get( 'request' )
+        if request:
+            return obj.owner == request.user
+        return False
+
+    def get_subscription_active( self, obj ):
+        return bool( obj.stripe_subscription_id )
+
+    def get_facility_count( self, obj ):
+        return Facility.objects.filter( division__organization=obj).count()
+
+
 class UserSerializer(serializers.ModelSerializer):
-    organization = serializers.StringRelatedField()
-    member_divisions = serializers.StringRelatedField( many=True )
-    member_facilities = serializers.StringRelatedField( many=True )
-    admin_divisions = serializers.StringRelatedField( many=True )
-    admin_facilities = serializers.StringRelatedField( many=True )
+    organization = OrganizationSerializer()
+    admin_divisions = DivisionNestedSerializer( many=True )
+    admin_facilities = FacilityNestedSerializer( many=True )
+    member_divisions =  DivisionNestedSerializer( many=True )
+    member_facilities =  FacilityNestedSerializer( many=True )
 
     class Meta:
         model = User
         fields = [
             'id',
             'username',
-            'email', 'fullname',
+            'email',
+            'fullname',
             'is_organization_admin',
             'is_division_admin',
             'is_facility_admin',
@@ -58,6 +92,9 @@ class RegisterSerializer( serializers.ModelSerializer ):
         if not re.search( r"[!@#$%^&*(),.?\":{}|<>]", value ):
             raise serializers.ValidationError( "Password must contain at least one special character." )
         # At least one uppercase letter
+        if not re.search( r"[A-Z]", value ):
+            raise serializers.ValidationError( "Password must contain at least one uppercase letter." )
+        #At Least one number
         if not re.search( r"\d", value ):
             raise serializers.ValidationError( "Password must contain at least one number." )
         return value
@@ -71,46 +108,3 @@ class RegisterSerializer( serializers.ModelSerializer ):
             fullname=validated_data.get( 'fullname', ''),
         )
         return user
-
-
-class FacilityNestedSerializer( serializers.ModelSerializer ):
-    division = serializers.StringRelatedField()
-    class Meta:
-        model = Facility
-        fields = ( 'id', 'name', 'division' )
-
-class DivisionNestedSerializer( serializers.ModelSerializer ):
-    class Meta:
-        model = Division
-        fields = ('id', 'name' )
-
-class OrganizationSerializer( serializers.ModelSerializer ):
-    is_owner = serializers.SerializerMethodField()
-    subscription_active = serializers.SerializerMethodField()
-    class Meta:
-        model = Organization
-        fields = ('id', 'name', 'is_owner', 'subscription_active' )
-
-    def get_is_owner( self, obj ):
-        return obj.owner == self.context['request'].user
-
-    def get_subscription_active( self, obj ):
-        return bool( obj.stripe_subscription_id )
-
-    def get_facility_count( self, obj ):
-        return Facility.objects.filter( division__organization=obj).count()
-
-
-class UserProfileSerializer( serializers.ModelSerializer ):
-    organization = OrganizationSerializer()
-    admin_divisions = DivisionNestedSerializer( many=True )
-    admin_facilities = FacilityNestedSerializer( many=True )
-    member_divisions =  DivisionNestedSerializer( many=True )
-    member_facilities =  FacilityNestedSerializer( many=True )
-
-    class Meta:
-        model = User
-        fields = (
-            'id', 'fullname', 'email', 'organization', 'admin_divisions',
-            'admin_facilities', 'member_divisions', 'member_facilities'
-        )

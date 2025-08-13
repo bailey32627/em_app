@@ -1,23 +1,23 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
 
 type UIContextType = {
-  isNavbarOpen: boolean;
-  toggleNavbar: () => void;
-  openNavbar: () => void;
-  closeNavbar: () => void;
+  isToolbarOpen: boolean;
+  toggleToolbar: () => void;
+  openToolbar: () => void;
+  closeToolbar: () => void;
 };
 
 const UIContext = createContext< UIContextType | undefined>( undefined );
 
 export const UIProvider = ({ children }: { children: ReactNode } ) => {
-  const [ isNavbarOpen, setIsNavbarOpen ] = useState( true );
+  const [ isToolbarOpen, setIsToolbarOpen ] = useState( true );
 
-  const toggleNavbar = () => setIsNavbarOpen( prev => !prev );
-  const openNavbar = () => setIsNavbarOpen( true );
-  const closeNavbar = () => setIsNavbarOpen( false );
+  const toggleToolbar = () => setIsToolbarOpen( prev => !prev );
+  const openToolbar = () => setIsToolbarOpen( true );
+  const closeToolbar = () => setIsToolbarOpen( false );
 
   return (
-    <UIContext.Provider value ={{ isNavbarOpen, toggleNavbar, openNavbar, closeNavbar } } >
+    <UIContext.Provider value ={{ isToolbarOpen, toggleToolbar, openToolbar, closeToolbar } } >
       {children}
     </UIContext.Provider>
   );

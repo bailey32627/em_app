@@ -11,4 +11,4 @@ class Facility( models.Model ):
     address = models.TextField( blank=True, null=True )
 
     def __str__(self):
-        return f"{self.division.system.name} / {self.division.name} / {self.name}"
+        return f"{self.division.organization.name} / {self.division.name} / {self.name}"
