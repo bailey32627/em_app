@@ -1,32 +1,45 @@
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.shortcuts import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.response import Response
+from rest_framework import status, permissions
 
 # Create your views here.
-from .models import Division
-from organizations import Organization
 from .serializers import DivisionSerializer
+from .models import Division
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 class CreateDivisionView( APIView ):
-    permission_classes[ IsAuthenticated ]
+    permission_classes = [ IsAuthenticated ]
 
     def post( self, request ):
-        org_id = request.data.get( 'organization' )
-        name = request.data.get( 'name' )
+        serializer = DivisionSerializer( data=request.data, context={'request': request} )
 
-        if not org_id or not name:
-            return Response( {'detail':'Organization ID and name are required'}, status=status.HTTP_400_BAD_REQUEST )
+        if serializer.is_valid():
+            division = serializer.save()
+            return Response( DivisionSerializer(division).data, status = status.HTTP_201_CREATED)
 
-        organization = get_object_or_404( Organization, id=org_id)
+        return Response( serializer.errors, status = status.HTTP_400_BAD_REQUEST )
 
-        #check if the user is the organization admin
-        if request.user != organization.owner:
-            raise PermissionDenied( "Only the organization admin can create division." )
 
-        division = Division.objects.create( name=name, organization=organization )
+class DeleteDivisionView( APIView ):
+    permission_classes = [ IsAuthenticated ]
 
-        serializer = DivisionSerializer( division )
-        return Response( serializer.data, status=status.HTTP_201_CREATED )
+    def delete( self, request, pk ):
+        try:
+            division = Division.objects.get( pk=pk )
+        except Division.DoesNotExist:
+            return Response( {"error": "Division not found" }, status=status.HTTP_404_NOT_FOUND)
+
+        #Remove this division from all related users
+        for user in User.objects.filter( member_divisions=division):
+            user.member_divisions.remove( division )
+
+        #Remove this division form all admin_divisions relations
+        for user in User.objects.filter( admin_divisions=division):
+            user.admin_divisions.remove( division )
+
+        #Finally delete the division
+        division.delete()
+        return Response( {"message": "Division deleted"}, status=status.HTTP_204_NO_CONTENT)

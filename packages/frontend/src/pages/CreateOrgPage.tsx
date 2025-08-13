@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCreateOrganization } from '../hooks/useCreateOrganization';
 import { useNavigate} from 'react-router-dom';
+import { useAuth } from '@em_app/shared';
 
 
 const CreateOrgPage = () => {
@@ -8,6 +9,11 @@ const CreateOrgPage = () => {
   const [ loading, setLoading ] = useState( false );
   const { createOrganization } = useCreateOrganization();
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  if( user && user.organization ) {
+    return <p>You are affiiliated with an Organization</p>
+  }
 
   const handleCreate = async () => {
     if( !name.trim() ) return;

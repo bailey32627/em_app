@@ -1,38 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { UserProfile } from '../utils/types';
-import { API_BASE_URL } from '@em_app/shared';
+import React from 'react';
 
-import { Navbar } from '../components/Navbar';
-import { ProfilepageLinks } from '../components/LinkData';
+import { ToolBar, ToolBarItem } from '../components/ToolBar';
+
+import { HiOutlineShare, HiOutlineSupport, HiOutlineOfficeBuilding, HiOutlineUser } from 'react-icons/hi';
+
 import { MainContent } from '../components/MainContent';
 import { ThemedButton } from '../components/ThemedButton';
 import { ThemedCard } from '../components/ThemedCard';
-import { useNavigate} from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import { useTheme } from '@em_app/shared';
 import { useAuth } from '@em_app/shared';
 
 
 const ProfilePage: React.FC = () => {
-  const [ profile, setProfile ] = useState< UserProfile | null >( null );
-  const { theme } = useTheme();
   const { user } = useAuth();
+  const { theme } = useTheme();
   const navigate = useNavigate();
 
-  useEffect( () => {
-    axios.get( `${API_BASE_URL}/api/user/me`)
-    .then( res => setProfile( res.data ))
-    .catch( err => console.error( err ) )
-  }, [] );
+  if( !user ){
+    // redirect to login
+    return <Navigate to="/login" replace />
+  }
 
-  const handleSubscription = () => {
-    if( !user ) navigate( '/login' );
-    if( user && user.is_organization_admin ) navigate( '/org_management');
-    if( user && user.is_division_admin ) navigate( '/divsion_management' );
-    if( user && user.is_facility_admin ) navigate( '/facility_management' );
-    if( user && !user.organization ) navigate( '/create_organization' );
-    if( user && user.organization ) navigate( '/facility_member' );
+  const handleCreateOrg = () => {
+    navigate( '/create_organization' );
+  }
+
+  const handleManageOrg = () => {
+    navigate( '/organization_management' );
+  }
+
+  const handleManageDivision = () => {
+    navigate( '/division_management' );
+  }
+
+  const handleManageFacility = () => {
+    navigate( '/facility_management' );
+  }
+
+  const handleDivisionView = () => {
+    navigate( '/division_member' );
+  }
+
+  const handleFacilityView = () => {
+    navigate( '/facliity_member' );
+  }
+
+  const toolConfig = {
+    org_admin: [
+      {
+        title: "Manage Organization",
+        onClick: handleManageOrg,
+        icon: <HiOutlineShare />,
+      },
+      {
+        title: "Manage Division",
+        onClick: handleManageDivision,
+        icon: <HiOutlineSupport />,
+      },
+      {
+        title: "Manage Facility",
+        onClick: handleManageFacility,
+        icon: <HiOutlineOfficeBuilding />,
+      },
+    ],
+    division_admin: [
+      {
+        title: "Manage Division",
+        onClick: handleManageDivision,
+        icon: <HiOutlineSupport />,
+      },
+      {
+        title: "Manage Facility",
+        onClick: handleManageFacility,
+        icon: <HiOutlineOfficeBuilding />,
+      },
+    ],
+    facility_admin: [
+      {
+        title: "Manage Facility",
+        onClick: handleManageFacility,
+        icon: <HiOutlineOfficeBuilding />,
+      },
+    ],
+    division_member: [
+
+    ],
+    facliity_member: [
+
+    ],
   }
 
   const styles: { [key: string]: React.CSSProperties } = {
@@ -40,9 +97,13 @@ const ProfilePage: React.FC = () => {
       display: 'grid',
       gridTemplateColumns: 'repeat( 2, 1fr)',
     },
+    user: {
+      display: 'inline-block',
+      fontSize: '3rem',
+    },
     div: {
       display: 'inline-block',
-      fontSize: '1rem',
+      fontSize: '1.1rem',
       paddingLeft: '1.5rem',
       paddingTop: '1rem',
     },
@@ -51,47 +112,49 @@ const ProfilePage: React.FC = () => {
     },
     button: {
       padding: '10px',
+      boxShadow: `2px 2px 5px 1px ${theme.primary_a50}`,
     },
   }
 
 
-  if( !profile ) return <p>Loading...</p>
+  const toolBarItems: ToolBarItem[] = [
+
+  ];
+
 
   return (
-    <Navbar links={ProfilepageLinks} >
+    <ToolBar items={toolBarItems} >
       <MainContent>
         <div style={styles.container}>
 
           <ThemedCard style={styles.div}>
-            <h2 style={styles.text}>Profile</h2>
-            <p style={styles.text}><strong>Name:</strong> {profile.fullname}</p>
-            <p style={styles.text}><strong>Email:</strong> {profile.email}</p>
-            <p style={styles.text}><strong>Organization:</strong> { profile.organization ? profile.organization.name : "" }</p>
+            <HiOutlineUser style={styles.user} />
+            <p style={styles.text}><strong>Name:</strong> {user.fullname}</p>
+            <p style={styles.text}><strong>Email:</strong> {user.email}</p>
+            <p style={styles.text}><strong>Organization:</strong> { user.organization ? user.organization.name : "" }</p>
           </ThemedCard>
+
 
           <ThemedCard style={styles.div}>
             <h3 style={styles.text}>Organization</h3>
-            { profile.organization ?
-              profile.organization.is_owner ?
-                  profile.organization.subscription_active ?
-                    <p style={styles.text}>Your are the Administrator for the <strong>{profile.organization.name}</strong> Organization.</p>
-                  :
-                    <p style={styles.text}>The Subscription for {profile.organization.name} has expired</p>
+            { user.organization ?
+              user.organization.is_owner ?
+                    <p style={styles.text}>Your are the Administrator for the <strong>{user.organization.name}</strong> Organization.</p>
                 :
-                  <p style={styles.text}>You are a member of the {profile.organization.name} Organization.</p>
+                    <p style={styles.text}>You are a member of the {user.organization.name} Organization.</p>
               :
               <p>You are not part of an Organization</p>
             }
-            { profile.organization ? <ThemedButton onClick={handleSubscription}>Manage Organization</ThemedButton> :
-              <ThemedButton onClick={handleSubscription} style={styles.button}>Create An Organization</ThemedButton>
+            { user.organization.is_owner ? <ThemedButton onClick={handleManageOrg} style={styles.button}>Manage Organization</ThemedButton> :
+              <ThemedButton onClick={handleCreateOrg} style={styles.button}>Create An Organization</ThemedButton>
             }
           </ThemedCard>
 
           <ThemedCard style={styles.div}>
             <h3 style={styles.text}>Division Admin Of: </h3>
-            { profile.admin_divisions.length > 0 ?(
+            { user.admin_divisions.length > 0 ?(
                 <ul style={styles.text}>
-                  { profile.admin_divisions.map( (div) => (
+                  { user.admin_divisions.map( (div) => (
                     <li key={div.id}>{div.name}</li>
                   ))}
                 </ul>
@@ -101,9 +164,9 @@ const ProfilePage: React.FC = () => {
 
           <ThemedCard style={styles.div}>
             <h3 style={styles.text} >Facility Admin Of: </h3>
-            { profile.admin_facilities.length > 0 ? (
+            { user.admin_facilities.length > 0 ? (
                 <ul style={styles.text}>
-                  { profile.admin_facilities.map( (fac) => (
+                  { user.admin_facilities.map( (fac) => (
                     <li key={fac.id}>{fac.name}</li>
                   ))}
                 </ul>
@@ -113,9 +176,9 @@ const ProfilePage: React.FC = () => {
 
           <ThemedCard style={styles.div}>
             <h3 style={styles.text}>Member of Facility:</h3>
-            { profile.member_facilities.length > 0 ? (
+            { user.member_facilities.length > 0 ? (
               <ul style={styles.text}>
-                { profile.member_facilities.map( (fac) => (
+                { user.member_facilities.map( (fac) => (
                   <li key={fac.id}>{fac.name}</li>
                 ))}
               </ul>
@@ -126,7 +189,7 @@ const ProfilePage: React.FC = () => {
 
         </div>
       </MainContent>
-    </Navbar>
+    </ToolBar>
   )
 }
 

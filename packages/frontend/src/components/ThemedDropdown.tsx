@@ -1,82 +1,95 @@
-import React, { ReactNode, useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useTheme } from '@em_app/shared';
-import { AiFillCaretDown } from 'react-icons/ai'
 
-interface ThemedDropdownProps {
+type ThemedDropdownProps = {
+  options: string[];
+  showSelected?: boolean;
+  defaultLabel?: string;
+  onSelect?: (value: string) => void;
   style?: React.CSSProperties;
-  children?: ReactNode;
 }
 
-export const ThemedDropdown: React.FC<ThemedDropdownProps> = ({ children, style }) => {
-  const [ isOpen, setIsOpen ] = useState( false );
-  const [ hovered, setHovered ] = useState( false );
-  const {theme} = useTheme();
 
-  const toggleDropdown = () => {
-    setIsOpen( !isOpen );
+export const ThemedDropdown: React.FC<ThemedDropdownProps> = ( { options, showSelected=true, defaultLabel, onSelect, style } ) => {
+  const [ isOpen, setIsOpen ] = useState( false );
+  const [ selected, setSelected ] = useState<String | null>(null);
+  const [ hovered, setHovered ] = useState( false );
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const { theme } = useTheme();
+
+  // close dropdown when clicking outside
+  useEffect( () => {
+    const handleClickOutside = ( event: MouseEvent ) => {
+      if( dropdownRef.current && !dropdownRef.current.contains( event.target as Node ) ) {
+        setIsOpen( false );
+      }
+    };
+    document.addEventListener( 'mousedown', handleClickOutside );
+    return () => document.removeEventListener( 'mousedown', handleClickOutside );
+  },[] );
+
+  const handleOptionClick = ( option: string ) => {
+    setSelected( option );
+    onSelect?.(option );
+    setIsOpen( false );
   };
 
-  const styles:{ [key: string]: React.CSSProperties } = {
+  const styles: { [key: string]: React.CSSProperties } = {
     container: {
-      backgroundColor: theme.surface_a20,
-      display: 'inline-block',
       position: 'relative',
-      borderRadius: '8px',
-      minWidth: "200px",
-      width: "100%",
-    },
-    trigger: {
-      padding: '10px 15px',
-      backgroundColor: theme.surface_a20,
+      display: 'inline-block',
       color: theme.text_color,
+    },
+    button: {
+      padding: '8px 12px',
       border: 'none',
+      backgroundColor: hovered ?  theme.surface_a40 : theme.surface_a20,
       cursor: 'pointer',
-      borderRadius: "8px",
-      width: '100%',
+      textAlign: 'left',
+      borderRadius: '8px',
+      color: theme.text_color,
     },
     content: {
       position: 'absolute',
       top: '100%',
       left: 0,
-      width: '100%',
-      backgroundColor: theme.surface_a30,
-      boxShadow: `0px 8px 16px 0px ${theme.surface_a50}`,
-      zIndex: 1000, // overlay content
+      marginTop: '4px',
       borderRadius: '8px',
-      padding: '5px 0',
+      boxShadow: `0 2px 6px ${theme.surface_a50}`,
+      zIndex: 1000,
+      width: '100%',
+      minWidth: '200px'
     },
-    content_ul: {
-      listStyleType: 'none',
-      padding: 0,
-      margin: 0,
-    },
-    content_li: {
-      padding: '10px 15px',
+    option: {
+      padding: '8px, 12px',
       cursor: 'pointer',
-      backgroundColor: hovered ? theme.primary_a30 : theme.tonal_a10,
-    },
-  };
+    }
+  }
 
   return (
-    <div style={{ ...styles.container, ...style}}>
-      <button onClick={ toggleDropdown } style={styles.trigger }><AiFillCaretDown/></button>
+    <div ref={dropdownRef} style={ {...styles.container, ...style}}>
+      <button style={styles.button}
+              onClick={ () => setIsOpen(!isOpen)}
+              onMouseEnter={() => setHovered(true)}
+              onMouseLeave={() => setHovered(false)}
+            > { showSelected ? selected ?? defaultLabel : defaultLabel }
+      </button>
       { isOpen && (
         <div style={ styles.content }>
-          <ul style={styles.content_ul}>
-
-            { React.Children.map( children, (child, index ) => (
-              <li
-                style={styles.content_li}
-                key={index}
-                onMouseEnter={()=>setHovered(true)}
-                onMouseLeave={()=>setHovered(false)}
-              >
-                {child}
-              </li>
-            ))}
-          </ul>
+          { options.map(( option, i ) => (
+            <div
+              key={i}
+              onClick={() => handleOptionClick( option ) }
+              style={ { ...styles.option,
+                      borderBottom: i !== options.length - 1 ? `1px solid ${theme.text_color}`: 'none',
+                      backgroundColor: selected === option ? `${theme.surface_a40}` : `${theme.surface_a10}`,
+                  }}
+                >
+                  {option}
+                </div>
+          ))}
         </div>
       )}
     </div>
-  )
-}
+  );
+};

@@ -43,18 +43,22 @@ const Navigation: React.FC = () => {
           path="/dashboard"
           element={user ? <DashboardPage /> : <Navigate to="/login" replace />}
         />
+
         <Route
           path="/profile"
           element={user ? <ProfilePage /> : <Navigate to="/login" replace /> }
         />
+
         <Route
           path="/create_organization"
-          element={user ? user.is_organization_admin ? <OrgManagementPage /> : <CreateOrgPage /> : <Navigate to="/login" replace />}
+          element={user ? user.organization.is_owner ? <OrgManagementPage /> : <CreateOrgPage /> : <Navigate to="/login" replace />}
         />
+
         <Route
-          path="/org_management"
-          element={user ? <OrgManagementPage /> : <Navigate to="/login" replace />}
+          path="/organization_management"
+          element={user ? user.organization.is_owner ? <OrgManagementPage /> : <DashboardPage /> : <Navigate to="/login" replace />}
         />
+        {/*}
         <Route
           path="/division_management"
           element={user ? user.is_division_admin ? <DivisionManagementPage /> : <DashboardPage /> : <Navigate to="/login" replace />}
@@ -67,6 +71,7 @@ const Navigation: React.FC = () => {
           path="/hva"
           element={user ? <HVAPage /> : < Navigate to="/login" replace /> }
         />
+        */}
 
       </Routes>
     </Router>

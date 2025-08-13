@@ -24,5 +24,5 @@ urlpatterns = [
     path('api/check-email/', views.check_email, name='check_email' ),
     path( 'api/', include( 'users.urls') ),
     path( 'api/', include( 'organizations.urls') ),
-    path( 'api/invitations/', include( "invitations.urls" )),
+    path( 'api/', include( "divisions.urls" )),
 ]
